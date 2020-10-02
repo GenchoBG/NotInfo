@@ -1,0 +1,13 @@
+html, body{
+	min-width: 300px;
+	min-height: 200px;
+	background-color: lightblue;
+}
+
+#content{
+	display: flex;
+	height: 100%;
+	font-size: 16pt;
+	justify-content: center;
+	align-items: center;
+}
