@@ -2,18 +2,35 @@ const checkbox = document.getElementById('analyzerSwitch');
 
 checkbox.addEventListener("click", function() {
 	const value = checkbox.checked;
+
 	chrome.storage.sync.set({'analyze': value});
-	if(value){
-		chrome.tabs.getSelected(null, function(tab) {
-		  	var code = 'window.location.reload();';
-		  	chrome.tabs.executeScript(tab.id, {code: code});
-		});
+
+	if (value) {
+		reloadPage();
+		changeIconToDefault(false);
+	} else {
+		changeIconToDefault();
 	}
 });
 
-(function () {
-chrome.storage.sync.get(['analyze'], function(data) {
-	console.log(data)
-	checkbox.checked = data.analyze;
-});
+(() => {
+	chrome.storage.sync.get(['analyze'], function(data) {
+		console.log(data)
+		checkbox.checked = data.analyze;
+	});
 })();
+
+reloadPage = () => {
+	chrome.tabs.getSelected(null, (tab) => {
+		chrome.tabs.executeScript(tab.id, {code: 'window.location.reload();'});
+  	});
+};
+
+changeIconToDefault = (toDefault = true) => {
+	const value = toDefault ? 'default' : 'alert';
+	
+	chrome.runtime.sendMessage({
+		method: 'updateIcon',
+		value
+	});
+}

@@ -9,6 +9,11 @@
   	"http://*/", 
   	"https://*/"
   ],
+  "icons": {
+    "16": "icons/default.png",
+    "48": "icons/default.png",
+    "128": "icons/default.png"
+   },
   "background": {
     "scripts": ["background.js"]
   },
