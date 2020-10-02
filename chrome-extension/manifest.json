@@ -2,7 +2,13 @@
   "manifest_version": 2,
   "name": "!info",
   "version": "0.1",
-  "permissions": ["declarativeContent", "storage"],
+  "permissions": [
+  	"declarativeContent", 
+  	"storage", 
+  	"tabs", 
+  	"http://*/", 
+  	"https://*/"
+  ],
   "background": {
     "scripts": ["background.js"]
   },
@@ -11,7 +17,8 @@
       "matches": [
         "<all_urls>"
       ],
-      "js": ["content.js"]
+      "js": ["content.js"],
+      "run_at": "document_end"
     }
   ],
   "browser_action": {
