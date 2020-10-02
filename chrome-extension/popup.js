@@ -7,9 +7,9 @@ checkbox.addEventListener("click", function() {
 
 	if (value) {
 		reloadPage();
-		changeIconToDefault(false);
+		changeIcon('alert.png');
 	} else {
-		changeIconToDefault();
+		changeIcon('default.png');
 	}
 });
 
@@ -26,11 +26,9 @@ reloadPage = () => {
   	});
 };
 
-changeIconToDefault = (toDefault = true) => {
-	const value = toDefault ? 'default' : 'alert';
-	
+changeIcon = (iconName) => {
 	chrome.runtime.sendMessage({
-		method: 'updateIcon',
-		value
+		action: 'changeIcon',
+		payload: iconName
 	});
 }

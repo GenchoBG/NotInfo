@@ -4,8 +4,8 @@ chrome.runtime.onInstalled.addListener(function() {
 	});
 });
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if (request.method == "getAnalyzerStatus"){
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if (msg.action === "getAnalyzerStatus"){
     	let analyzeStatus = false;
     	chrome.storage.sync.get('analyze', function(data) {
 			analyzeStatus = data.analyze;
@@ -14,7 +14,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	  return;
 	}
 	
-	if (request.method === "updateIcon") {
-		chrome.browserAction.setIcon({path: `icons/${request.value}.png`});
+	if (msg.action === "changeIcon") {
+		chrome.browserAction.setIcon({path: `icons/${msg.payload}`});
 	}
 });
