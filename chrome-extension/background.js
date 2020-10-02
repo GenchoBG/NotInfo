@@ -4,16 +4,17 @@ chrome.runtime.onInstalled.addListener(function() {
 	});
 });
 
-// chrome.storage.onChanged.addListener(function(changes, namespace) {
-    
-// });
-
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.method == "getAnalyzerStatus"){
     	let analyzeStatus = false;
     	chrome.storage.sync.get('analyze', function(data) {
 			analyzeStatus = data.analyze;
 		});
-      sendResponse({status: analyzeStatus});
-    }
+	  sendResponse({status: analyzeStatus});
+	  return;
+	}
+	
+	if (request.method === "updateIcon") {
+		chrome.browserAction.setIcon({path: `icons/${request.value}.png`});
+	}
 });
