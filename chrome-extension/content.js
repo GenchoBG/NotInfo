@@ -1,5 +1,4 @@
 (() => {
-
 	const getArticleText = () => {
 		let articleContent;
 		const paragraphs = document.querySelectorAll("p");
@@ -19,3 +18,14 @@
 		}
 	});
 })();
+
+postContent = (content) => {
+	fetch('83.228.90.116:80/detectpropaganda', {
+		method: 'post',
+		body: content
+	}).then(function(response) {
+		return response.json();
+	}).then(function(data) {
+		alert(data);
+	});
+}
