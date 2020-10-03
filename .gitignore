@@ -131,3 +131,4 @@ dmypy.json
 # Project-specific folders
 NotInfo.ML/data/
 NotInfo.ML/nothingtoseehere/
+NotInfo.ChromeExtension/extension/build.sh
