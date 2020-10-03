@@ -1,7 +1,7 @@
 /* global chrome */
 import React, { Component } from 'react';
 import classes from './App.module.scss';
-import Aux from './hoc/Aux';
+import Aux from './hoc/Auxiliary';
 
 class App extends Component {
   state = {
