@@ -12,7 +12,7 @@ class App extends Component {
     chrome.storage.sync.get(['analyze'], (data) => {
       this.setState({ checkboxValue: data.analyze });
       if (data.analyze) {
-        chrome.storage.sync.get(['fetchedData'], function (data) {
+        chrome.storage.sync.get(['fetchedData'], (data) => {
           const confidence = data.fetchedData.result;
           this.setState(prevState => { return { confidence: confidence } });
         });
@@ -31,6 +31,7 @@ class App extends Component {
 
   checkboxClickedHandler = (e) => {
     const value = e.target.checked;
+    this.setState({ checkboxValue: value });
     chrome.storage.sync.set({ 'analyze': value });
 
     if (value) {
@@ -56,7 +57,6 @@ class App extends Component {
 
   render() {
     const { confidence, checkboxValue } = this.state;
-
     return (
       <div className={classes.App}>
         <div className={classes.Content}>
