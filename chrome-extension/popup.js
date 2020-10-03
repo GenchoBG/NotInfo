@@ -12,8 +12,34 @@ checkbox.addEventListener("click", function() {
 });
 
 (function () {
-chrome.storage.sync.get(['analyze'], function(data) {
-	console.log(data)
-	checkbox.checked = data.analyze;
-});
+	chrome.storage.sync.get(['analyze'], function(data) {
+		checkbox.checked = data.analyze;
+		if(data.analyze){
+			chrome.storage.sync.get(['fetchedData'], function(data) {
+				const confidence = data.fetchedData.result;
+				showResult(confidence);
+			});
+		}
+	});
+
+	chrome.storage.onChanged.addListener(function(changes, namespace) {
+		if(changes.fetchedData){
+	    	const newConfidence = changes.fetchedData.newValue.result;
+	    	showResult(newConfidence);
+	    	console.log(newConfidence)
+		}else if(changes.analyze && !changes.analyze.newValue){
+			emptyResultDiv();
+		}
+	});
 })();
+
+showResult = (confidence) => {
+	const div = document.getElementById('result');
+	const result = confidence ? "This article is disinformational!" : "Everything is fine.";
+	div.innerHTML = result;
+}
+
+emptyResultDiv = () => {
+	const div = document.getElementById('result');
+	div.innerHTML = '';
+}

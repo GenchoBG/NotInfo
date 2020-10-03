@@ -8,6 +8,8 @@ chrome.runtime.onInstalled.addListener(function() {
     
 // });
 
+// see how i can get sendResponse data from content js through messages
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.method == "getAnalyzerStatus"){
     	let analyzeStatus = false;
@@ -16,4 +18,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		});
       sendResponse({status: analyzeStatus});
     }
+    else if (request.method == "sendContent"){
+    	postContent(request.data,);
+    }
 });
+
+postContent = (content) => {
+	fetch('http://83.228.90.116:80/detectpropaganda', {
+		method: 'post',
+		body: content
+	}).then(function(response) {
+		return response.json();
+	}).then(function(data) {
+		console.log(data)
+		chrome.storage.sync.set({'fetchedData': data});
+	});
+}

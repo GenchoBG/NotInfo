@@ -2,10 +2,19 @@
 	chrome.storage.sync.get('analyze', (data) => {
 		if (data.analyze) {
 			const article = getArticleText();
-			alert(article);
 
-			getTagByContent("В първата част на");
+			chrome.runtime.sendMessage({
+				method: 'sendContent',
+				data: article
+			});
 		}
+	});
+
+	chrome.storage.onChanged.addListener(function(changes, namespace) {
+	    // do sth with changes.fetchedData.newValue
+	    if(changes.fetchedData && changes.fetchedData.newValue.result){
+			getTagByContent("В първата част на");
+	    }
 	});
 })();
 
@@ -27,7 +36,7 @@ getTagByContent = (content) => {
 }
 
 const getArticleText = () => {
-	let articleContent;
+	let articleContent = "";
 	const paragraphs = document.querySelectorAll("p");
 
 	for (const paragraph of paragraphs) {
@@ -36,14 +45,3 @@ const getArticleText = () => {
 
 	return articleContent;
 };
-
-postContent = (content) => {
-	fetch('83.228.90.116:80/detectpropaganda', {
-		method: 'post',
-		body: content
-	}).then(function(response) {
-		return response.json();
-	}).then(function(data) {
-		alert(data);
-	});
-}
