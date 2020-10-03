@@ -51,6 +51,8 @@ changeIcon = (iconName) => {
 		action: 'changeIcon',
 		payload: iconName
 	});
+}
+
 emptyResultDiv = () => {
 	const div = document.getElementById('result');
 	div.innerHTML = '';

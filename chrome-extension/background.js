@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	}
 	
 	if (request.action === "changeIcon") {
-		chrome.browserAction.setIcon({path: `icons/${msg.payload}`});
+		chrome.browserAction.setIcon({path: `icons/${request.payload}`});
 		return;
 	}
 
@@ -31,14 +31,20 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
-postContent = (content) => {
+const postContent = (content) => {
 	fetch('http://83.228.90.116:80/detectpropaganda', {
-		method: 'post',
-		body: content
-	}).then(function(response) {
+		method: 'POST',
+		headers: {
+	      'Content-Type': 'application/json'
+	    },
+		body: JSON.stringify(content)
+	}).then(response =>{
 		return response.json();
 	}).then(function(data) {
 		console.log(data)
 		chrome.storage.sync.set({'fetchedData': data});
+	}).catch(err=>{
+		chrome.storage.sync.set({'fetchedData': null});
+		console.log(err);
 	});
 }
