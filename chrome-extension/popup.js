@@ -25,7 +25,7 @@ checkbox.addEventListener("click", function() {
 	});
 
 	chrome.storage.onChanged.addListener(function(changes, namespace) {
-		if(changes.fetchedData){
+		if(changes.fetchedData && changes.fetchedData.newValue){
 	    	const newConfidence = changes.fetchedData.newValue.result;
 	    	showResult(newConfidence);
 	    	console.log(newConfidence)

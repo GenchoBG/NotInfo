@@ -1,0 +1,19 @@
+.App {
+  width: 300px;
+	height: 400px;
+	background-color: lightblue;
+  margin: 0;
+
+  .Content{
+    display: flex;
+    height: 100%;
+    font-size: 16pt;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    .Result{
+      display: block;
+    }
+  }
+}
