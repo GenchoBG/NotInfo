@@ -1,9 +1,11 @@
 /* global chrome */
 import React, { Component } from 'react';
 import classes from './App.module.scss';
+
 import Aux from './hoc/Auxiliary';
 import Analyze from './components/Analyze';
 import APIResult from './components/APIResult/APIResult';
+import Loader from './components/Loader/Loader';
 
 class App extends Component {
   state = {
@@ -26,7 +28,7 @@ class App extends Component {
       <div className={classes.App}>
         <div className={classes.Content}>
           {loading
-            ? <p>Loading...</p>
+            ? <Loader/>
             : <Aux>
               <Analyze checkboxClickedHandler={this.checkboxClickedHandler} />
               <APIResult fetchedData={this.fetchedData} />
