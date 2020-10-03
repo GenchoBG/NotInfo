@@ -4,12 +4,6 @@ chrome.runtime.onInstalled.addListener(function() {
 	});
 });
 
-// chrome.storage.onChanged.addListener(function(changes, namespace) {
-    
-// });
-
-// see how i can get sendResponse data from content js through messages
-
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.method == "getAnalyzerStatus"){
     	let analyzeStatus = false;
