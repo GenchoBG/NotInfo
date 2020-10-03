@@ -1,18 +1,22 @@
 /* global chrome */
 import React, { Component } from 'react';
 import classes from './App.module.scss';
+import Aux from './hoc/Aux';
 
 class App extends Component {
   state = {
     confidence: null,
-    checkboxValue: null
+    checkboxValue: null,
+    loading: false
   }
 
   componentDidMount() {
     chrome.storage.sync.get(['analyze'], (data) => {
-      this.setState({ checkboxValue: data.analyze });
+      console.log('analyze', data.analyze)
+      this.setState(prevState => { return { checkboxValue: data.analyze } });
       if (data.analyze) {
-        chrome.storage.sync.get(['fetchedData'], function (data) {
+        chrome.storage.sync.get(['fetchedData'], (data) => {
+          console.log('fetchedData', data.fetchedData)
           const confidence = data.fetchedData.result;
           this.setState(prevState => { return { confidence: confidence } });
         });
@@ -22,7 +26,7 @@ class App extends Component {
     chrome.storage.onChanged.addListener((changes, namespace) => {
       if (changes.fetchedData && changes.fetchedData.newValue) {
         const newConfidence = changes.fetchedData.newValue.result;
-        this.setState({ confidence: newConfidence });
+        this.setState({ confidence: newConfidence, loading: false });
       } else if (changes.analyze && !changes.analyze.newValue) {
         this.setState({ confidence: null });
       }
@@ -31,9 +35,12 @@ class App extends Component {
 
   checkboxClickedHandler = (e) => {
     const value = e.target.checked;
+    console.log('clicked checkbox state', value)
+    this.setState(prevState => { return { checkboxValue: value } });
     chrome.storage.sync.set({ 'analyze': value });
 
     if (value) {
+      this.setState(prevState => { return { loading: true } });
       this.reloadPage();
       this.changeIcon('alert.png');
     } else {
@@ -55,20 +62,38 @@ class App extends Component {
   }
 
   render() {
-    const { confidence, checkboxValue } = this.state;
+    const { confidence, checkboxValue, loading } = this.state;
 
-    return (
-      <div className={classes.App}>
-        <div className={classes.Content}>
+    let renderData = (
+      <div>Loading...</div>
+
+    );
+
+    let resultText = "";
+    if (confidence) {
+      resultText = confidence ? "This article is disinformational!" : "Everything is fine.";
+    }
+
+    if (!loading) {
+      renderData = (
+        <Aux>
           <div>
             <label>Is analyzer on:</label>
             <input type="checkbox" defaultChecked={checkboxValue} onChange={this.checkboxClickedHandler} className={classes.analyzerSwitch} />
           </div>
           <div className={classes.Result}>
-            {confidence !== null ?
-              confidence ? "This article is disinformational!" : "Everything is fine."
-              : null}
+            {resultText}
           </div>
+        </Aux>
+      );
+    }
+
+
+
+    return (
+      <div className={classes.App}>
+        <div className={classes.Content}>
+          {renderData}
         </div>
       </div>
     );
