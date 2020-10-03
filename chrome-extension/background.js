@@ -16,10 +16,18 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     	chrome.storage.sync.get('analyze', function(data) {
 			analyzeStatus = data.analyze;
 		});
-      sendResponse({status: analyzeStatus});
-    }
-    else if (request.method == "sendContent"){
-    	postContent(request.data,);
+	  sendResponse({status: analyzeStatus});
+	  return;
+	}
+	
+	if (request.action === "changeIcon") {
+		chrome.browserAction.setIcon({path: `icons/${msg.payload}`});
+		return;
+	}
+
+	if (request.method == "sendContent"){
+    	postContent(request.data);
+    	return;
     }
 });
 

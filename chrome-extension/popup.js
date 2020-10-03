@@ -2,12 +2,14 @@ const checkbox = document.getElementById('analyzerSwitch');
 
 checkbox.addEventListener("click", function() {
 	const value = checkbox.checked;
+
 	chrome.storage.sync.set({'analyze': value});
-	if(value){
-		chrome.tabs.getSelected(null, function(tab) {
-		  	var code = 'window.location.reload();';
-		  	chrome.tabs.executeScript(tab.id, {code: code});
-		});
+
+	if (value) {
+		reloadPage();
+		changeIcon('alert.png');
+	} else {
+		changeIcon('default.png');
 	}
 });
 
@@ -33,12 +35,22 @@ checkbox.addEventListener("click", function() {
 	});
 })();
 
+reloadPage = () => {
+	chrome.tabs.getSelected(null, (tab) => {
+		chrome.tabs.executeScript(tab.id, {code: 'window.location.reload();'});
+  	});
+};
 showResult = (confidence) => {
 	const div = document.getElementById('result');
 	const result = confidence ? "This article is disinformational!" : "Everything is fine.";
 	div.innerHTML = result;
 }
 
+changeIcon = (iconName) => {
+	chrome.runtime.sendMessage({
+		action: 'changeIcon',
+		payload: iconName
+	});
 emptyResultDiv = () => {
 	const div = document.getElementById('result');
 	div.innerHTML = '';
