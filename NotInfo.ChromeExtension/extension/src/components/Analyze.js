@@ -9,7 +9,7 @@ const DEFAULT_ICON = 'default.png';
 class Analyze extends Component {
 
     state = {
-        isWebsiteAdded: false
+        isWebsiteAdded: false,
     };
 
     componentDidMount() {
@@ -21,7 +21,7 @@ class Analyze extends Component {
                 const isAlreadyAdded = isIncluded(websiteURLS, "urlName", urlName);
 
                 if (isAlreadyAdded) {
-                    this.setState({isWebsiteAdded: true});
+                    this.setState({ isWebsiteAdded: true });
                 }
             });
         });
@@ -38,9 +38,16 @@ class Analyze extends Component {
 
     btnClickedHandler = () => {
         chrome.storage.sync.set({ 'loading': true });
+        // this.reloadPage();
 
         this.props.btnClickedHandler();
     }
+
+    reloadPage = () => {
+        chrome.tabs.getSelected(null, (tab) => {
+            chrome.tabs.executeScript(tab.id, { code: 'window.location.reload();' });
+        });
+    };
 
     changeIcon = (value) => {
         let iconName = DEFAULT_ICON;
@@ -50,15 +57,17 @@ class Analyze extends Component {
         }
 
         chrome.runtime.sendMessage({
-            action: 'changeIcon',
+            method: 'changeIcon',
             payload: iconName
         });
     }
 
     render() {
+        const { isWebsiteAdded } = this.state;
+
         return (
             <Button variant='info' onClick={this.btnClickedHandler}>
-                Analyze
+                {isWebsiteAdded ? "Analyze again" : "Analyze"}
             </Button>
         );
     }

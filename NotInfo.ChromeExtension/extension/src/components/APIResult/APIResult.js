@@ -9,11 +9,12 @@ class APIResult extends Component {
 
     componentDidMount() {
         chrome.storage.onChanged.addListener((changes, namespace) => {
+            console.log(changes)
             if (changes.fetchedData && changes.fetchedData.newValue) {
                 const newConfidence = changes.fetchedData.newValue.result;
                 this.setState({ confidence: newConfidence });
                 this.props.fetchedData();
-                chrome.storage.sync.set({'loading': false});
+                chrome.storage.sync.set({ 'loading': false });
                 return;
             }
         });
@@ -33,7 +34,7 @@ class APIResult extends Component {
     }
 
     componentWillUnmount() {
-        chrome.storage.sync.set({'fetchedData': null});
+        chrome.storage.sync.set({ 'fetchedData': null });
     }
 }
 

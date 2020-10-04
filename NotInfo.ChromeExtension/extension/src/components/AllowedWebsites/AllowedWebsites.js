@@ -19,8 +19,6 @@ class AllowedWebsites extends Component {
                 if (isAlreadyAdded) {
                     this.setState({ isWebsiteAdded: true });
                 }
-
-                chrome.storage.sync.set({ 'analyze': isAlreadyAdded });
             });
         });
     }
