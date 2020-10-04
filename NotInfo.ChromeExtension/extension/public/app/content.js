@@ -7,7 +7,11 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 	}
 
 	if (changes.fetchedData && changes.fetchedData.newValue.length > 0) {
-		getTagByContent(changes.fetchedData.newValue[0]);
+		for (let i = 0; i < changes.fetchedData.newValue.length; i++) {
+			const shouldScroll = i === 0;
+			console.log(i, shouldScroll)
+			getTagByContent(changes.fetchedData.newValue[i], shouldScroll);
+		}
 	}
 });
 
@@ -34,7 +38,7 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 	});
 })();
 
-const getTagByContent = (content) => {
+const getTagByContent = (content, shouldScroll) => {
 	const pTags = document.getElementsByTagName("p");
 	const searchText = content;
 	let found;
@@ -46,10 +50,13 @@ const getTagByContent = (content) => {
 		}
 	}
 
-	found.style.border = "1px solid red";
+	found.style.border = "2px solid red";
 	found.style.padding = "10px";
 	found.style.borderRadius = "15px";
-	found.scrollIntoView({ behavior: "smooth", block: "center" });
+
+	if (shouldScroll) {
+		found.scrollIntoView({ behavior: "smooth", block: "center" });
+	}
 }
 
 const getArticleText = () => {
