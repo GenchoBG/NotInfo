@@ -20,22 +20,22 @@
 		}
 	});
 
-	chrome.storage.onChanged.removeListener(() => {
-		chrome.storage.onChanged.addListener((changes, namespace) => {
-			//search for a paragraph to customize
-			if (changes.loading && changes.loading.newValue) {
-				alert('loading.........')
-				chrome.runtime.sendMessage({
-					method: 'sendContent',
-					data: getArticleText()
-				});
-			}
+	// chrome.storage.onChanged.removeListener(() => {
+	chrome.storage.onChanged.addListener((changes, namespace) => {
+		//search for a paragraph to customize
+		if (changes.loading && changes.loading.newValue) {
+			alert('loading...')
+			chrome.runtime.sendMessage({
+				method: 'sendContent',
+				data: getArticleText()
+			});
+		}
 
-			if (changes.fetchedData && changes.fetchedData.newValue.result) {
-				getTagByContent("component");
-			}
-		});
+		if (changes.fetchedData && changes.fetchedData.newValue.result) {
+			getTagByContent("component");
+		}
 	});
+	// });
 })();
 
 const getTagByContent = (content) => {
