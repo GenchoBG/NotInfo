@@ -1,7 +1,7 @@
 /* global chrome */
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
-import { isIncluded } from '../../utils/arrayUtils';
+import { isIncluded } from '../utils/arrayUtils';
 
 const ACTIVE_ICON = 'alert.png';
 const DEFAULT_ICON = 'default.png';
@@ -37,13 +37,20 @@ class Analyze extends Component {
     }
 
     btnClickedHandler = () => {
+        this.reloadPage();
+
         chrome.runtime.sendMessage({
-            method: 'getDOMContent',
-            data: null
+            method: 'getDOMContent'
         });
 
         this.props.btnClickedHandler();
     }
+
+    reloadPage = () => {
+        chrome.tabs.getSelected(null, (tab) => {
+            chrome.tabs.executeScript(tab.id, { code: 'window.location.reload();' });
+        });
+    };
 
     changeIcon = (value) => {
         let iconName = DEFAULT_ICON;

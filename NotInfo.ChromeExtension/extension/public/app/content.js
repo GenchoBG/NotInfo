@@ -1,4 +1,15 @@
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+	if (request.method === "getDOMContent") {
+		alert('daaaaaa');
+		chrome.runtime.sendMessage({
+			method: 'sendContent',
+			data: getArticleText()
+		});
+	}
+});
+
 (() => {
+
 	chrome.storage.sync.get('analyze', (data) => {
 		data.analyze && window.addEventListener('load', () => {
 			chrome.runtime.sendMessage({
@@ -8,14 +19,7 @@
 		})
 	});
 
-	chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-		if (request.method == "getDOMContent") {
-			chrome.runtime.sendMessage({
-				method: 'sendContent',
-				data: getArticleText()
-			});
-		}
-	});
+
 
 	chrome.storage.onChanged.addListener((changes, namespace) => {
 		//search for a paragraph to customize
