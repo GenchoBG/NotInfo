@@ -49,7 +49,6 @@ const postContent = (content) => {
 	}).then(response => {
 		return response.json();
 	}).then(function (data) {
-		console.log(data)
 		chrome.storage.sync.set({ 'fetchedData': data ? data : [] });
 	}).catch(err => {
 		chrome.storage.sync.set({ 'fetchedData': null });
