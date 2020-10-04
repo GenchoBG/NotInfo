@@ -1,6 +1,7 @@
 from flask import Flask, request, Response, jsonify
 from flask_cors import CORS, cross_origin
 import random
+import re
 
 app = Flask(__name__)
 CORS(app)
@@ -8,6 +9,14 @@ app.config['CORS_HEADERS'] = '*'
 
 @app.route('/detectpropaganda', methods = ['POST'])
 def detect_propaganda():
+
+	text = request.data.decode("utf-8")
+	
+	spllitted = re.split('\?|\.|!|\n',text)
+	
+	print (text)
+	print (len(spllitted))
+	
 	confidence = random.uniform(0, 1)
 	propagandaResult = {'confidence': confidence, 'result': True if confidence >= 0.5 else False}
 	return jsonify(propagandaResult)
