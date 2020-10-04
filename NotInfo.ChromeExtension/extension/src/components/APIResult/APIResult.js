@@ -13,6 +13,7 @@ class APIResult extends Component {
                 const newConfidence = changes.fetchedData.newValue.result;
                 this.setState({ confidence: newConfidence });
                 this.props.fetchedData();
+                chrome.storage.sync.set({'loading': false});
                 return;
             }
         });

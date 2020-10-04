@@ -37,20 +37,10 @@ class Analyze extends Component {
     }
 
     btnClickedHandler = () => {
-        this.reloadPage();
-
-        chrome.runtime.sendMessage({
-            method: 'getDOMContent'
-        });
+        chrome.storage.sync.set({ 'loading': true });
 
         this.props.btnClickedHandler();
     }
-
-    reloadPage = () => {
-        chrome.tabs.getSelected(null, (tab) => {
-            chrome.tabs.executeScript(tab.id, { code: 'window.location.reload();' });
-        });
-    };
 
     changeIcon = (value) => {
         let iconName = DEFAULT_ICON;
