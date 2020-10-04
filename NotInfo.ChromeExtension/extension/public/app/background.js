@@ -31,7 +31,9 @@ const postContent = (content) => {
 		return response.json();
 	}).then(function (data) {
 		console.log(data)
-		chrome.storage.sync.set({ 'fetchedData': data });
+		chrome.storage.sync.set({ 'fetchedData': data }, () => {
+			console.log('%cfetched data set', "color:red")
+		});
 	}).catch(err => {
 		chrome.storage.sync.set({ 'fetchedData': null });
 		console.log(err);

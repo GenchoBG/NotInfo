@@ -37,13 +37,15 @@ class APIResult extends Component {
             <div className={[classes.Result, this.props.className].join(' ')}>
                 {confidence !== null
                     ? confidence
-                        ? <Disinformation /> : <Fine />
+                        // ? <Disinformation /> : <Fine />
+                        ? <p>disinfo</p> : <p>fineeee</p>
                     : null}
             </div>
         );
     }
 
     componentWillUnmount() {
+        console.log('unmounteddddd')
         chrome.storage.sync.set({ 'fetchedData': null });
     }
 }

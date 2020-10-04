@@ -61,14 +61,23 @@ class AllowedWebsites extends Component {
     }
 
     analyzedClickedHandler = () => {
-        chrome.storage.sync.set({ 'loading': true }, () => {
-            console.log('storage value set loading to true')
+        console.log("%cCLICKED", "color:green")
+        chrome.storage.sync.get('loading', (data) => {
+            if (!data.loading) {
+                chrome.storage.sync.set({ 'loading': true }, () => {
+                    console.log('storage value set loading to true')
+                });
+            }
         });
         this.setState({ loading: true });
     }
 
     fetchedData = () => {
-        chrome.storage.sync.set({ 'loading': false });
+        chrome.storage.sync.get('loading', (data) => {
+            if (data.loading) {
+                chrome.storage.sync.set({ 'loading': false });
+            }
+        });
         this.setState({ loading: false });
     }
 
@@ -95,10 +104,10 @@ class AllowedWebsites extends Component {
                 <div className={classes.Content}>
                     {loading
                         ? <Loader />
-                        : <Aux>
-                            <Analyze className={classes.Analyze} btnClickedHandler={this.analyzedClickedHandler} />
-                            <APIResult className={classes.APIResult} fetchedData={this.fetchedData} />
-                        </Aux>}
+                        : <APIResult className={classes.APIResult} fetchedData={this.fetchedData} />}
+                    <div style={loading ? { display: 'none' } : { display: 'block' }}>
+                        <Analyze className={classes.Analyze} btnClickedHandler={this.analyzedClickedHandler} />
+                    </div>
                 </div>
                 <div className={classes.Button} >
                     <Button variant={btnVariant} onClick={btnHandler}>
