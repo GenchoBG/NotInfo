@@ -8,7 +8,6 @@ import Aux from '../../hoc/Auxiliary';
 import APIResult from '../APIResult/APIResult';
 import classes from './AllowedWebsites.module.scss';
 import Loader from '../Loader/Loader';
-import { ReactComponent as Fine } from '../../assets/icons/fine.svg';
 
 class AllowedWebsites extends Component {
     state = {
@@ -62,10 +61,14 @@ class AllowedWebsites extends Component {
     }
 
     analyzedClickedHandler = () => {
+        chrome.storage.sync.set({ 'loading': true }, () => {
+            console.log('storage value set loading to true')
+        });
         this.setState({ loading: true });
     }
 
     fetchedData = () => {
+        chrome.storage.sync.set({ 'loading': false });
         this.setState({ loading: false });
     }
 

@@ -24,8 +24,7 @@ class Analyze extends Component {
     }
 
     btnClickedHandler = () => {
-        chrome.storage.sync.set({ 'loading': true });
-
+        console.log('setting loading to true');
         this.props.btnClickedHandler();
     }
 

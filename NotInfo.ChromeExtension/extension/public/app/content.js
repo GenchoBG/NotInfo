@@ -1,3 +1,16 @@
+chrome.storage.onChanged.addListener((changes, namespace) => {
+	if (changes.loading && changes.loading.newValue) {
+		chrome.runtime.sendMessage({
+			method: 'sendContent',
+			data: getArticleText()
+		});
+	}
+
+	if (changes.fetchedData && changes.fetchedData.newValue.length > 0) {
+		getTagByContent(changes.fetchedData.newValue[0]);
+	}
+});
+
 (() => {
 	chrome.storage.sync.get({ 'websiteURLS': [] }, (data) => {
 		const websiteURLS = data.websiteURLS;
@@ -19,23 +32,6 @@
 			});
 		}
 	});
-
-	// chrome.storage.onChanged.removeListener(() => {
-	chrome.storage.onChanged.addListener((changes, namespace) => {
-		//search for a paragraph to customize
-		if (changes.loading && changes.loading.newValue) {
-			alert('loading...')
-			chrome.runtime.sendMessage({
-				method: 'sendContent',
-				data: getArticleText()
-			});
-		}
-
-		if (changes.fetchedData && changes.fetchedData.newValue.result) {
-			getTagByContent("component");
-		}
-	});
-	// });
 })();
 
 const getTagByContent = (content) => {

@@ -1,5 +1,9 @@
 chrome.runtime.onInstalled.addListener(function () {
 	chrome.storage.sync.set({ loading: false });
+
+	chrome.storage.sync.get(null, (items) => {
+		console.log(items);
+	});
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -27,7 +31,7 @@ const postContent = (content) => {
 		return response.json();
 	}).then(function (data) {
 		console.log(data)
-		// chrome.storage.sync.set({ 'fetchedData': data });
+		chrome.storage.sync.set({ 'fetchedData': data });
 	}).catch(err => {
 		chrome.storage.sync.set({ 'fetchedData': null });
 		console.log(err);
