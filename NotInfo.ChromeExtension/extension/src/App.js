@@ -13,7 +13,7 @@ class App extends Component {
     loading: false
   }
 
-  checkboxClickedHandler = (value) => {
+  analyzedClickedHandler = (value) => {
     this.setState({ loading: true });
   }
 
@@ -30,7 +30,7 @@ class App extends Component {
           {loading
             ? <Loader />
             : <Aux>
-              <Analyze checkboxClickedHandler={this.checkboxClickedHandler} />
+              <Analyze btnClickedHandler={this.analyzedClickedHandler} />
               <APIResult fetchedData={this.fetchedData} />
               <AllowedWebsites />
             </Aux>}
