@@ -1,3 +1,5 @@
+const key = "";
+
 chrome.runtime.onInstalled.addListener(function () {
 	chrome.storage.sync.set({ loading: false });
 });
@@ -24,14 +26,15 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 	});
 });
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
 	if (request.method === "changeIcon") {
 		chrome.browserAction.setIcon({ path: `icons/${request.payload}` });
 		return;
 	}
 
 	if (request.method == "sendContent") {
-		postContent(request.data);
+		var translatedData = await translate(request.data);
+		postContent(translatedData);
 		return;
 	}
 });
@@ -51,6 +54,22 @@ const postContent = (content) => {
 	}).catch(err => {
 		chrome.storage.sync.set({ 'fetchedData': null });
 	});
+}
+
+const translate = async function (text) {
+	let result = "";
+	let sentences = text.match(/[^\.!\?]+[\.!\?]+/g);
+	for (let i = 0; i < sentences.length; i++) {
+		const response = await fetch(`https://translation.googleapis.com/language/translate/v2?key=${key}&q=${sentences[i]}&target=EN`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "text/plain; charset=utf-8"
+			}
+		});
+		var json = await response.json();
+		result = result.concat(json.data.translations[0].translatedText);
+	}
+	return result;
 }
 
 const isIncluded = (arr, elName, elValue) => {

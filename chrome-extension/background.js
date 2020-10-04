@@ -1,4 +1,4 @@
-const key = ""
+const key = "";
 
 chrome.runtime.onInstalled.addListener(function () {
 	chrome.storage.sync.set({analyze: false}, function() {
@@ -51,7 +51,6 @@ const postContent = (content) => {
 		console.log(err);
 	});
 }
-
 
 const translate = async function (text) {
 	let result = "";
