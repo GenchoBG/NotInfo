@@ -24,7 +24,6 @@ class Analyze extends Component {
     }
 
     btnClickedHandler = () => {
-        console.log('setting loading to true');
         this.props.btnClickedHandler();
     }
 

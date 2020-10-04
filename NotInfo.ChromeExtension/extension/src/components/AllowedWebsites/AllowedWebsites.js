@@ -61,12 +61,9 @@ class AllowedWebsites extends Component {
     }
 
     analyzedClickedHandler = () => {
-        console.log("%cCLICKED", "color:green")
         chrome.storage.sync.get('loading', (data) => {
             if (!data.loading) {
-                chrome.storage.sync.set({ 'loading': true }, () => {
-                    console.log('storage value set loading to true')
-                });
+                chrome.storage.sync.set({ 'loading': true });
             }
         });
         this.setState({ loading: true });

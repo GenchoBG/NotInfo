@@ -17,8 +17,6 @@ class APIResult extends Component {
         });
 
         chrome.storage.onChanged.addListener((changes, namespace) => {
-            console.log('api result change caught')
-            console.log(changes)
             if (changes.fetchedData) {
                 if (changes.fetchedData.newValue) {
                     const newConfidence = changes.fetchedData.newValue.length > 0;
@@ -32,7 +30,6 @@ class APIResult extends Component {
 
     render() {
         const { confidence } = this.state;
-        console.log('confidence', confidence)
         return (
             <div className={[classes.Result, this.props.className].join(' ')}>
                 {confidence !== null
@@ -45,7 +42,6 @@ class APIResult extends Component {
     }
 
     componentWillUnmount() {
-        console.log('unmounteddddd')
         chrome.storage.sync.set({ 'fetchedData': null });
     }
 }

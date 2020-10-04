@@ -42,13 +42,9 @@ const postContent = (content) => {
 	}).then(response => {
 		return response.json();
 	}).then(function (data) {
-		console.log(data)
-		chrome.storage.sync.set({ 'fetchedData': data }, () => {
-			console.log('%cfetched data set', "color:red")
-		});
+		chrome.storage.sync.set({ 'fetchedData': data });
 	}).catch(err => {
 		chrome.storage.sync.set({ 'fetchedData': null });
-		console.log(err);
 	});
 }
 
