@@ -1,14 +1,11 @@
 /* global chrome */
 import React, { Component } from 'react';
+import { Button } from 'react-bootstrap';
 
 const ACTIVE_ICON = 'alert.png';
 const DEFAULT_ICON = 'default.png';
 
 class Analyze extends Component {
-    state = {
-        checkboxValue: null
-    }
-
     componentDidMount() {
         chrome.storage.sync.get(['analyze'], (data) => {
             if (data) {
@@ -26,31 +23,16 @@ class Analyze extends Component {
         });
     }
 
-    checkboxClickedHandler = (e) => {
-        const value = e.target.checked;
-        this.setState({ checkboxValue: value });
-        chrome.storage.sync.set({ 'analyze': value });
+    btnClickedHandler = (e) => {
+        console.log('clicked');
 
-        this.changeIcon(value);
-
-        if (value) {
-            this.props.checkboxClickedHandler(value);
-            return;
-        }
-
+        this.props.btnClickedHandler(true);
     }
-
-    reloadPage = () => {
-        chrome.tabs.getSelected(null, (tab) => {
-            chrome.tabs.executeScript(tab.id, { code: 'window.location.reload();' });
-        });
-    };
 
     changeIcon = (value) => {
         let iconName = DEFAULT_ICON;
 
         if (value) {
-            // this.reloadPage();
             iconName = ACTIVE_ICON;
         }
 
@@ -61,15 +43,10 @@ class Analyze extends Component {
     }
 
     render() {
-        const { checkboxValue } = this.state;
-
         return (
-            <div>
-                <div>
-                    <label>Is analyzer on:</label>
-                    <input type="checkbox" checked={checkboxValue} onChange={this.checkboxClickedHandler} />
-                </div>
-            </div>
+            <Button variant='info' onClick={this.btnClickedHandler}>
+                Analyze
+            </Button>
         );
     }
 }
