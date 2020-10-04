@@ -1,46 +1,48 @@
-/* eslint-disable no-undef */
 (() => {
 	chrome.storage.sync.get('analyze', (data) => {
 		data.analyze && window.addEventListener('load', () => {
-			observeDOMChange();
+			chrome.runtime.sendMessage({
+				method: 'sendContent',
+				data: getArticleText()
+			});
 		})
 	});
 
-	chrome.storage.onChanged.addListener(function(changes, namespace) {
+	chrome.storage.onChanged.addListener((changes, namespace) => {
 		//search for a paragraph to customize
-	    if(changes.fetchedData && changes.fetchedData.newValue.result){
+		if (changes.fetchedData && changes.fetchedData.newValue.result) {
 			getTagByContent("В първата част на");
-	    }
+		}
 	});
 })();
 
-observeDOMChange = () => {
-	const targetNode = document.querySelector('body');
+// observeDOMChange = () => {
+// 	const targetNode = document.querySelector('body');
 
-	const config = {childList: true, subtree: true };
+// 	const config = {childList: true, subtree: true };
 
-	const callback = function(mutationsList, observer) {
-		for(const mutation of mutationsList) {
-			if (mutation.type === 'childList') {
-				const article = getArticleText();
+// 	const callback = function(mutationsList, observer) {
+// 		for(const mutation of mutationsList) {
+// 			if (mutation.type === 'childList') {
+// 				const article = getArticleText();
 
-				chrome.runtime.sendMessage({
-					method: 'sendContent',
-					data: article
-				});
+// 				chrome.runtime.sendMessage({
+// 					method: 'sendContent',
+// 					data: article
+// 				});
 
-				break;
-			}
-			else if (mutation.type === 'attributes') {
-				alert('The ' + mutation.attributeName + ' attribute was modified.');
-			}
-		}
-	};
+// 				break;
+// 			}
+// 			else if (mutation.type === 'attributes') {
+// 				alert('The ' + mutation.attributeName + ' attribute was modified.');
+// 			}
+// 		}
+// 	};
 
-	const observer = new MutationObserver(callback);
+// 	const observer = new MutationObserver(callback);
 
-	observer.observe(targetNode, config);
-}
+// 	observer.observe(targetNode, config);
+// }
 
 getTagByContent = (content) => {
 	const pTags = document.getElementsByTagName("p");
@@ -56,7 +58,7 @@ getTagByContent = (content) => {
 
 	found.style.border = "1px solid red";
 	found.style.padding = "10px";
-	found.style.borderRadius = "15px"; 
+	found.style.borderRadius = "15px";
 }
 
 const getArticleText = () => {
