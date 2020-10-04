@@ -50,7 +50,7 @@ class Analyze extends Component {
         let iconName = DEFAULT_ICON;
 
         if (value) {
-            this.reloadPage();
+            // this.reloadPage();
             iconName = ACTIVE_ICON;
         }
 
