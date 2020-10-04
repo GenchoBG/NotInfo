@@ -1,13 +1,9 @@
 /* global chrome */
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
-import { isIncluded } from '../utils/arrayUtils';
-
-const ACTIVE_ICON = 'alert.png';
-const DEFAULT_ICON = 'default.png';
+import { isIncluded } from '../../utils/arrayUtils';
 
 class Analyze extends Component {
-
     state = {
         isWebsiteAdded: false,
     };
@@ -25,20 +21,10 @@ class Analyze extends Component {
                 }
             });
         });
-
-        chrome.storage.onChanged.addListener((changes, namespace) => {
-            console.log('[Analyze]');
-            console.log(changes)
-            if (changes.analyze) {
-                this.setState({ checkboxValue: changes.analyze.newValue });
-                this.changeIcon(changes.analyze.newValue);
-            }
-        });
     }
 
     btnClickedHandler = () => {
         chrome.storage.sync.set({ 'loading': true });
-        // this.reloadPage();
 
         this.props.btnClickedHandler();
     }
@@ -49,26 +35,15 @@ class Analyze extends Component {
         });
     };
 
-    changeIcon = (value) => {
-        let iconName = DEFAULT_ICON;
-
-        if (value) {
-            iconName = ACTIVE_ICON;
-        }
-
-        chrome.runtime.sendMessage({
-            method: 'changeIcon',
-            payload: iconName
-        });
-    }
-
     render() {
         const { isWebsiteAdded } = this.state;
 
         return (
-            <Button variant='info' onClick={this.btnClickedHandler}>
-                {isWebsiteAdded ? "Analyze again" : "Analyze"}
-            </Button>
+            <div className={this.props.className}>
+                <Button variant='info' onClick={this.btnClickedHandler}>
+                    {isWebsiteAdded ? "Analyze again" : "Analyze"}
+                </Button>
+            </div>
         );
     }
 }

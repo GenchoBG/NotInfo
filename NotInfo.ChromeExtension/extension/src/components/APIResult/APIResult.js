@@ -1,6 +1,8 @@
 /* global chrome */
 import React, { Component } from 'react';
 import classes from './APIResult.module.scss';
+import { ReactComponent as Fine } from '../../assets/icons/fine.svg';
+import { ReactComponent as Disinformation } from '../../assets/icons/disinformation.svg';
 
 class APIResult extends Component {
     state = {
@@ -8,8 +10,13 @@ class APIResult extends Component {
     }
 
     componentDidMount() {
+        chrome.storage.sync.get('fetchedData', data => {
+            if (data.fetchedData) {
+                this.setState({ confidence: data.fetchedData.result });
+            }
+        });
+
         chrome.storage.onChanged.addListener((changes, namespace) => {
-            console.log(changes)
             if (changes.fetchedData && changes.fetchedData.newValue) {
                 const newConfidence = changes.fetchedData.newValue.result;
                 this.setState({ confidence: newConfidence });
@@ -22,19 +29,21 @@ class APIResult extends Component {
 
     render() {
         const { confidence } = this.state;
-
+        console.log(confidence)
         return (
-            <div className={classes.Result}>
+            <div className={[classes.Result, this.props.className].join(' ')}>
                 {confidence !== null
                     ? confidence
-                        ? "This article is disinformational!" : "Everything is fine."
+                        ? <Disinformation /> : <Fine />
                     : null}
             </div>
         );
     }
 
     componentWillUnmount() {
-        chrome.storage.sync.set({ 'fetchedData': null });
+        chrome.storage.onChanged.removeListener(() => {
+            chrome.storage.sync.set({ 'fetchedData': null });
+        });
     }
 }
 

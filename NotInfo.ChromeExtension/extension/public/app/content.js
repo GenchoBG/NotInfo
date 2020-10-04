@@ -20,48 +20,23 @@
 		}
 	});
 
-	chrome.storage.onChanged.addListener((changes, namespace) => {
-		//search for a paragraph to customize
-		if (changes.loading && changes.loading.newValue) {
-			chrome.runtime.sendMessage({
-				method: 'sendContent',
-				data: getArticleText()
-			});
-		}
+	chrome.storage.onChanged.removeListener(() => {
+		chrome.storage.onChanged.addListener((changes, namespace) => {
+			//search for a paragraph to customize
+			if (changes.loading && changes.loading.newValue) {
+				alert('loading.........')
+				chrome.runtime.sendMessage({
+					method: 'sendContent',
+					data: getArticleText()
+				});
+			}
 
-		if (changes.fetchedData && changes.fetchedData.newValue.result) {
-			getTagByContent("В първата част на");
-		}
+			if (changes.fetchedData && changes.fetchedData.newValue.result) {
+				getTagByContent("component");
+			}
+		});
 	});
 })();
-
-// observeDOMChange = () => {
-// 	const targetNode = document.querySelector('body');
-
-// 	const config = {childList: true, subtree: true };
-
-// 	const callback = function(mutationsList, observer) {
-// 		for(const mutation of mutationsList) {
-// 			if (mutation.type === 'childList') {
-// 				const article = getArticleText();
-
-// 				chrome.runtime.sendMessage({
-// 					method: 'sendContent',
-// 					data: article
-// 				});
-
-// 				break;
-// 			}
-// 			else if (mutation.type === 'attributes') {
-// 				alert('The ' + mutation.attributeName + ' attribute was modified.');
-// 			}
-// 		}
-// 	};
-
-// 	const observer = new MutationObserver(callback);
-
-// 	observer.observe(targetNode, config);
-// }
 
 const getTagByContent = (content) => {
 	const pTags = document.getElementsByTagName("p");

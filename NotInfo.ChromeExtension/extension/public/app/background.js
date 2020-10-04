@@ -4,15 +4,6 @@ chrome.runtime.onInstalled.addListener(function () {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	console.log('message received', request.method)
-	console.log(sender)
-	if (request.method == "getAnalyzerStatus") {
-		let analyzeStatus = false;
-		chrome.storage.sync.get('analyze', function (data) {
-			analyzeStatus = data.analyze;
-		});
-		sendResponse({ status: analyzeStatus });
-		return;
-	}
 
 	if (request.method === "changeIcon") {
 		chrome.browserAction.setIcon({ path: `icons/${request.payload}` });
