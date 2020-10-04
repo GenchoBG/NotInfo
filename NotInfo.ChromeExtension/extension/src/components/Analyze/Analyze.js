@@ -24,7 +24,10 @@ class Analyze extends Component {
     }
 
     btnClickedHandler = () => {
-        this.props.btnClickedHandler();
+        this.reloadPage();
+        setTimeout(() => {
+            this.props.btnClickedHandler();
+        }, 2000);
     }
 
     reloadPage = () => {

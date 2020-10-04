@@ -30,12 +30,12 @@ class APIResult extends Component {
 
     render() {
         const { confidence } = this.state;
+
         return (
             <div className={[classes.Result, this.props.className].join(' ')}>
                 {confidence !== null
                     ? confidence
-                        // ? <Disinformation /> : <Fine />
-                        ? <p>disinfo</p> : <p>fineeee</p>
+                        ? <Disinformation /> : <Fine />
                     : null}
             </div>
         );

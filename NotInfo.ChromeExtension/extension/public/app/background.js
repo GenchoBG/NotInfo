@@ -6,17 +6,21 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 	chrome.storage.sync.get('websiteURLS', (data) => {
 		const websiteURLS = data.websiteURLS;
 
-		chrome.tabs.query({ 'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT }, (tabs) => {
-			const tabURL = tabs[0].url;
-			const urlName = tabURL.split('/')[2];
-			const isAlreadyAdded = isIncluded(websiteURLS, "urlName", urlName);
+		if (websiteURLS) {
+			chrome.tabs.query({ 'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT }, (tabs) => {
+				const tabURL = tabs[0].url;
+				const urlName = tabURL.split('/')[2];
+				const isAlreadyAdded = isIncluded(websiteURLS, "urlName", urlName);
 
-			if (isAlreadyAdded) {
-				chrome.browserAction.setIcon({ path: 'icons/alert.png' });
-			} else {
-				chrome.browserAction.setIcon({ path: 'icons/default.png' });
-			}
-		});
+				if (isAlreadyAdded) {
+					chrome.browserAction.setIcon({ path: 'icons/alert.png' });
+				} else {
+					chrome.browserAction.setIcon({ path: 'icons/default.png' });
+				}
+			});
+		} else {
+			chrome.browserAction.setIcon({ path: './icons/default.png' });
+		}
 	});
 });
 
@@ -42,7 +46,8 @@ const postContent = (content) => {
 	}).then(response => {
 		return response.json();
 	}).then(function (data) {
-		chrome.storage.sync.set({ 'fetchedData': data });
+		console.log(data)
+		chrome.storage.sync.set({ 'fetchedData': data ? data : [] });
 	}).catch(err => {
 		chrome.storage.sync.set({ 'fetchedData': null });
 	});
