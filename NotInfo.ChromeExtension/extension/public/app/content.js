@@ -8,6 +8,15 @@
 		})
 	});
 
+	chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+		if (request.method == "getDOMContent") {
+			chrome.runtime.sendMessage({
+				method: 'sendContent',
+				data: getArticleText()
+			});
+		}
+	});
+
 	chrome.storage.onChanged.addListener((changes, namespace) => {
 		//search for a paragraph to customize
 		if (changes.fetchedData && changes.fetchedData.newValue.result) {
