@@ -1,6 +1,8 @@
 /* global chrome */
 import React, { Component } from 'react';
 import classes from './APIResult.module.scss';
+import { ReactComponent as Fine } from '../../assets/fine.svg';
+import { ReactComponent as Disinformation } from '../../assets/disinformation.svg';
 
 class APIResult extends Component {
     state = {
@@ -8,24 +10,20 @@ class APIResult extends Component {
     }
 
     componentDidMount() {
-        chrome.storage.sync.get(['analyze'], (data) => {
-            if (data.analyze) {
-                chrome.storage.sync.get(['fetchedData'], (data) => {
-                    this.setState({ confidence: data.fetchedData.result });
-                });
+        chrome.storage.sync.get('fetchedData', data => {
+            if (data.fetchedData) {
+                this.setState({ confidence: data.fetchedData.length > 0 });
             }
         });
 
         chrome.storage.onChanged.addListener((changes, namespace) => {
-            if (changes.fetchedData && changes.fetchedData.newValue) {
-                const newConfidence = changes.fetchedData.newValue.result;
-                this.setState({ confidence: newConfidence });
-                this.props.fetchedData();
-                return;
-            }
+            if (changes.fetchedData) {
+                if (changes.fetchedData.newValue) {
+                    const newConfidence = changes.fetchedData.newValue.length > 0;
+                    this.setState({ confidence: newConfidence });
+                }
 
-            if (changes.analyze && !changes.analyze.newValue) {
-                this.setState({ confidence: null });
+                this.props.fetchedData();
             }
         });
     }
@@ -34,13 +32,17 @@ class APIResult extends Component {
         const { confidence } = this.state;
 
         return (
-            <div className={classes.Result}>
+            <div className={[classes.Result, this.props.className].join(' ')}>
                 {confidence !== null
                     ? confidence
-                        ? "This article is disinformational!" : "Everything is fine."
+                        ? <Disinformation /> : <Fine />
                     : null}
             </div>
         );
+    }
+
+    componentWillUnmount() {
+        chrome.storage.sync.set({ 'fetchedData': null });
     }
 }
 

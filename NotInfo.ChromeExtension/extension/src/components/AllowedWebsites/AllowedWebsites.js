@@ -2,10 +2,17 @@
 import React, { useState, Component } from 'react';
 import { Button } from 'react-bootstrap';
 import { isIncluded } from '../../utils/arrayUtils';
+import { changeIcon } from '../../utils/changeIcon';
+import Analyze from '../Analyze/Analyze';
+import Aux from '../../hoc/Auxiliary';
+import APIResult from '../APIResult/APIResult';
+import classes from './AllowedWebsites.module.scss';
+import Loader from '../Loader/Loader';
 
 class AllowedWebsites extends Component {
     state = {
-        isWebsiteAdded: false
+        isWebsiteAdded: false,
+        loading: false
     }
 
     componentDidMount() {
@@ -19,8 +26,6 @@ class AllowedWebsites extends Component {
                 if (isAlreadyAdded) {
                     this.setState({ isWebsiteAdded: true });
                 }
-
-                chrome.storage.sync.set({ 'analyze': isAlreadyAdded });
             });
         });
     }
@@ -36,6 +41,7 @@ class AllowedWebsites extends Component {
             });
         });
 
+        changeIcon(true);
         this.setState({ isWebsiteAdded: true });
     }
 
@@ -50,26 +56,62 @@ class AllowedWebsites extends Component {
             });
         });
 
+        changeIcon(false);
         this.setState({ isWebsiteAdded: false });
     }
 
+    analyzedClickedHandler = () => {
+        chrome.storage.sync.get('loading', (data) => {
+            if (!data.loading) {
+                chrome.storage.sync.set({ 'loading': true });
+            }
+        });
+        this.setState({ loading: true });
+    }
+
+    fetchedData = () => {
+        chrome.storage.sync.get('loading', (data) => {
+            if (data.loading) {
+                chrome.storage.sync.set({ 'loading': false });
+            }
+        });
+        this.setState({ loading: false });
+    }
+
     render() {
-        const { isWebsiteAdded } = this.state;
+        const { isWebsiteAdded, loading } = this.state;
 
         let btnVariant = "danger";
         let btnHandler = this.removeWebsiteHandler;
         let btnText = "Remove website";
+        let navText = "!info is ON";
 
         if (!isWebsiteAdded) {
             btnVariant = "success";
             btnHandler = this.addWebsiteHandler;
             btnText = "Add website";
+            navText = "!info is OFF";
         }
 
         return (
-            <Button variant={btnVariant} onClick={btnHandler}>
-                {btnText}
-            </Button>
+            <div className={[this.props.className, classes.Page].join(' ')}>
+                <div className={[classes.Nav, isWebsiteAdded ? classes.On : classes.Off].join(' ')}>
+                    <p>{navText}</p>
+                </div>
+                <div className={classes.Content}>
+                    {loading
+                        ? <Loader />
+                        : <APIResult className={classes.APIResult} fetchedData={this.fetchedData} />}
+                    <div style={loading ? { display: 'none' } : { display: 'block' }}>
+                        <Analyze className={classes.Analyze} btnClickedHandler={this.analyzedClickedHandler} />
+                    </div>
+                </div>
+                <div className={classes.Button} >
+                    <Button variant={btnVariant} onClick={btnHandler}>
+                        {btnText}
+                    </Button>
+                </div>
+            </div>
         );
     }
 }

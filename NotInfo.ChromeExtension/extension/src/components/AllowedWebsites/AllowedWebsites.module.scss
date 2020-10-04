@@ -1,0 +1,54 @@
+@import '../../utils/styles.module.scss';
+
+.Page{
+    min-height: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+
+    .Nav{
+        width: 100%;
+        padding: 10px;
+        border-bottom: 1px solid black;
+        text-align: center;
+
+        p{
+            margin-bottom: 0;
+        }
+    }
+
+    .On{
+        background-color: $on-color;
+    }
+
+    .Off{
+        background-color: $off-color;
+    }
+
+    .Content{
+        flex: 1 0 auto;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+        .Analyze{
+
+        }
+
+        .APIResult{
+
+        }
+    }
+
+    .Button{
+        flex: none;
+        margin-bottom: 10px;
+
+        button{
+            margin: auto;
+        }
+    }
+}
