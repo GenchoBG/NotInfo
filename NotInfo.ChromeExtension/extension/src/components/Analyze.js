@@ -1,16 +1,29 @@
 /* global chrome */
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
+import { isIncluded } from '../../utils/arrayUtils';
 
 const ACTIVE_ICON = 'alert.png';
 const DEFAULT_ICON = 'default.png';
 
 class Analyze extends Component {
+
+    state = {
+        isWebsiteAdded: false
+    };
+
     componentDidMount() {
-        chrome.storage.sync.get(['analyze'], (data) => {
-            if (data) {
-                this.setState({ checkboxValue: data.analyze });
-            }
+        chrome.storage.sync.get({ 'websiteURLS': [] }, (data) => {
+            const websiteURLS = data.websiteURLS;
+            chrome.tabs.query({ 'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT }, (tabs) => {
+                const tabURL = tabs[0].url;
+                const urlName = tabURL.split('/')[2];
+                const isAlreadyAdded = isIncluded(websiteURLS, "urlName", urlName);
+
+                if (isAlreadyAdded) {
+                    this.setState({isWebsiteAdded: true});
+                }
+            });
         });
 
         chrome.storage.onChanged.addListener((changes, namespace) => {
@@ -23,10 +36,13 @@ class Analyze extends Component {
         });
     }
 
-    btnClickedHandler = (e) => {
-        console.log('clicked');
+    btnClickedHandler = () => {
+        chrome.runtime.sendMessage({
+            method: 'getDOMContent',
+            data: null
+        });
 
-        this.props.btnClickedHandler(true);
+        this.props.btnClickedHandler();
     }
 
     changeIcon = (value) => {

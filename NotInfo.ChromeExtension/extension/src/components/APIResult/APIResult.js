@@ -8,24 +8,12 @@ class APIResult extends Component {
     }
 
     componentDidMount() {
-        chrome.storage.sync.get(['analyze'], (data) => {
-            if (data.analyze) {
-                chrome.storage.sync.get(['fetchedData'], (data) => {
-                    this.setState({ confidence: data.fetchedData.result });
-                });
-            }
-        });
-
         chrome.storage.onChanged.addListener((changes, namespace) => {
             if (changes.fetchedData && changes.fetchedData.newValue) {
                 const newConfidence = changes.fetchedData.newValue.result;
                 this.setState({ confidence: newConfidence });
                 this.props.fetchedData();
                 return;
-            }
-
-            if (changes.analyze && !changes.analyze.newValue) {
-                this.setState({ confidence: null });
             }
         });
     }
@@ -41,6 +29,10 @@ class APIResult extends Component {
                     : null}
             </div>
         );
+    }
+
+    componentWillUnmount() {
+        chrome.storage.sync.set({'fetchedData': null});
     }
 }
 

@@ -13,7 +13,7 @@ class App extends Component {
     loading: false
   }
 
-  analyzedClickedHandler = (value) => {
+  analyzedClickedHandler = () => {
     this.setState({ loading: true });
   }
 
