@@ -1,6 +1,9 @@
 /* global chrome */
 import React, { Component } from 'react';
 
+const ACTIVE_ICON = 'alert.png';
+const DEFAULT_ICON = 'default.png';
+
 class Analyze extends Component {
     state = {
         checkboxValue: null
@@ -8,26 +11,33 @@ class Analyze extends Component {
 
     componentDidMount() {
         chrome.storage.sync.get(['analyze'], (data) => {
-            console.log('from mounted', data.analyze)
             if (data) {
                 this.setState({ checkboxValue: data.analyze });
+            }
+        });
+
+        chrome.storage.onChanged.addListener((changes, namespace) => {
+            console.log('[Analyze]');
+            console.log(changes)
+            if (changes.analyze) {
+                this.setState({ checkboxValue: changes.analyze.newValue });
+                this.changeIcon(changes.analyze.newValue);
             }
         });
     }
 
     checkboxClickedHandler = (e) => {
         const value = e.target.checked;
-        console.log('checkbox clicked', value)
         this.setState({ checkboxValue: value });
+        chrome.storage.sync.set({ 'analyze': value });
+
+        this.changeIcon(value);
 
         if (value) {
             this.props.checkboxClickedHandler(value);
-            this.reloadPage();
-            this.changeIcon('alert.png');
             return;
         }
 
-        this.changeIcon('default.png');
     }
 
     reloadPage = () => {
@@ -36,7 +46,14 @@ class Analyze extends Component {
         });
     };
 
-    changeIcon = (iconName) => {
+    changeIcon = (value) => {
+        let iconName = DEFAULT_ICON;
+
+        if (value) {
+            this.reloadPage();
+            iconName = ACTIVE_ICON;
+        }
+
         chrome.runtime.sendMessage({
             action: 'changeIcon',
             payload: iconName
