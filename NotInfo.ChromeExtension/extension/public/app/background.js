@@ -1,14 +1,26 @@
 chrome.runtime.onInstalled.addListener(function () {
 	chrome.storage.sync.set({ loading: false });
+});
 
-	chrome.storage.sync.get(null, (items) => {
-		console.log(items);
+chrome.tabs.onActivated.addListener(function (activeInfo) {
+	chrome.storage.sync.get('websiteURLS', (data) => {
+		const websiteURLS = data.websiteURLS;
+
+		chrome.tabs.query({ 'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT }, (tabs) => {
+			const tabURL = tabs[0].url;
+			const urlName = tabURL.split('/')[2];
+			const isAlreadyAdded = isIncluded(websiteURLS, "urlName", urlName);
+
+			if (isAlreadyAdded) {
+				chrome.browserAction.setIcon({ path: 'icons/alert.png' });
+			} else {
+				chrome.browserAction.setIcon({ path: 'icons/default.png' });
+			}
+		});
 	});
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-	console.log('message received', request.method)
-
 	if (request.method === "changeIcon") {
 		chrome.browserAction.setIcon({ path: `icons/${request.payload}` });
 		return;
@@ -38,4 +50,14 @@ const postContent = (content) => {
 		chrome.storage.sync.set({ 'fetchedData': null });
 		console.log(err);
 	});
+}
+
+const isIncluded = (arr, elName, elValue) => {
+	const length = arr.length;
+	for (let i = 0; i < length; i++) {
+		if (arr[i][elName] == elValue) {
+			return true;
+		}
+	}
+	return false;
 }

@@ -9,34 +9,31 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 	if (changes.fetchedData && changes.fetchedData.newValue.length > 0) {
 		for (let i = 0; i < changes.fetchedData.newValue.length; i++) {
 			const shouldScroll = i === 0;
-			console.log(i, shouldScroll)
 			getTagByContent(changes.fetchedData.newValue[i], shouldScroll);
 		}
 	}
 });
 
-(() => {
-	chrome.storage.sync.get({ 'websiteURLS': [] }, (data) => {
-		const websiteURLS = data.websiteURLS;
-		const urlName = window.location.toString().split('/')[2];
-		const isAlreadyAdded = isIncluded(websiteURLS, "urlName", urlName);
-		if (isAlreadyAdded) {
-			chrome.runtime.sendMessage({
-				method: 'changeIcon',
-				payload: 'alert.png'
-			});
-			chrome.runtime.sendMessage({
-				method: 'sendContent',
-				data: getArticleText()
-			});
-		} else {
-			chrome.runtime.sendMessage({
-				method: 'changeIcon',
-				payload: 'default.png'
-			});
-		}
-	});
-})();
+chrome.storage.sync.get({ 'websiteURLS': [] }, (data) => {
+	const websiteURLS = data.websiteURLS;
+	const urlName = window.location.toString().split('/')[2];
+	const isAlreadyAdded = isIncluded(websiteURLS, "urlName", urlName);
+	if (isAlreadyAdded) {
+		chrome.runtime.sendMessage({
+			method: 'changeIcon',
+			payload: 'alert.png'
+		});
+		chrome.runtime.sendMessage({
+			method: 'sendContent',
+			data: getArticleText()
+		});
+	} else {
+		chrome.runtime.sendMessage({
+			method: 'changeIcon',
+			payload: 'default.png'
+		});
+	}
+});
 
 const getTagByContent = (content, shouldScroll) => {
 	const pTags = document.getElementsByTagName("p");
